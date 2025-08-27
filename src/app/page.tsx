@@ -20,6 +20,7 @@ import { TemplateList } from '@/components/TemplateList'
 import { BlockList } from '@/components/BlockList'
 import { FolderList } from '@/components/FolderList'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
+import { ThemeToggle } from '@/components/ThemeToggle'
 import { useAuth } from '@/contexts/AuthContext'
 
 // Import API functions
@@ -61,8 +62,6 @@ function AppContent() {
       try {
         const response = await templatesApi.getAll()
         console.log('Templates API response:', response)
-        console.log('Templates data type:', typeof response.data)
-        console.log('Templates is array:', Array.isArray(response.data))
         return response.data
       } catch (error) {
         console.error('Error fetching templates:', error)
@@ -78,8 +77,6 @@ function AppContent() {
       try {
         const response = await blocksApi.getAll()
         console.log('Blocks API response:', response)
-        console.log('Blocks data type:', typeof response.data)
-        console.log('Blocks is array:', Array.isArray(response.data))
         return response.data
       } catch (error) {
         console.error('Error fetching blocks:', error)
@@ -95,8 +92,6 @@ function AppContent() {
       try {
         const response = await foldersApi.getAll()
         console.log('Folders API response:', response)
-        console.log('Folders data type:', typeof response.data)
-        console.log('Folders is array:', Array.isArray(response.data))
         return response.data
       } catch (error) {
         console.error('Error fetching folders:', error)
@@ -304,17 +299,17 @@ function AppContent() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b bg-card">
+      <header className="border-b border-border bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center animate-gentle-pulse">
                 <FileText className="w-4 h-4 text-primary-foreground" />
               </div>
-              <h1 className="text-2xl font-bold">Jaydai Prompt Manager</h1>
+              <h1 className="text-2xl font-bold text-foreground">Jaydai</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
+              <div className="hidden md:flex items-center space-x-2">
                 <Button 
                   variant="outline" 
                   size="sm"
@@ -322,9 +317,10 @@ function AppContent() {
                     setEditingTemplate(null)
                     setTemplateFormOpen(true)
                   }}
+                  className="border-border hover:bg-accent smooth-transition"
                 >
                   <Plus className="w-4 h-4 mr-2" />
-                  New Template
+                  Template
                 </Button>
                 <Button 
                   variant="outline" 
@@ -333,9 +329,10 @@ function AppContent() {
                     setEditingBlock(null)
                     setBlockFormOpen(true)
                   }}
+                  className="border-border hover:bg-accent smooth-transition"
                 >
                   <Blocks className="w-4 h-4 mr-2" />
-                  New Block
+                  Block
                 </Button>
                 <Button 
                   variant="outline" 
@@ -344,11 +341,15 @@ function AppContent() {
                     setEditingFolder(null)
                     setFolderFormOpen(true)
                   }}
+                  className="border-border hover:bg-accent smooth-transition"
                 >
                   <Folder className="w-4 h-4 mr-2" />
-                  New Folder
+                  Folder
                 </Button>
               </div>
+              
+              {/* Theme Toggle */}
+              <ThemeToggle />
               
               {/* User Menu */}
               <DropdownMenu>
@@ -356,30 +357,34 @@ function AppContent() {
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src="" alt={user?.metadata?.name || user?.email} />
-                      <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                      <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                        {getUserInitials()}
+                      </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuContent className="w-56 bg-popover border-border" align="end" forceMount>
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">{user?.metadata?.name || 'User'}</p>
+                      <p className="text-sm font-medium leading-none text-popover-foreground">
+                        {user?.metadata?.name || 'User'}
+                      </p>
                       <p className="text-xs leading-none text-muted-foreground">
                         {user?.email}
                       </p>
                     </div>
                   </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-border" />
+                  <DropdownMenuItem className="hover:bg-accent">
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem className="hover:bg-accent">
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Settings</span>
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={signOut}>
+                  <DropdownMenuSeparator className="bg-border" />
+                  <DropdownMenuItem onClick={signOut} className="hover:bg-destructive/10 text-destructive">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                   </DropdownMenuItem>
@@ -393,45 +398,93 @@ function AppContent() {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-6">
         {/* Search Bar */}
-        <div className="mb-6">
+        <div className="mb-6 animate-slide-up-fade-in">
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search templates, blocks, and folders..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="pl-10 bg-background border-border focus:border-primary enhanced-focus smooth-transition"
             />
           </div>
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="templates" className="flex items-center space-x-2">
+        {/* Mobile Create Buttons */}
+        <div className="md:hidden flex space-x-2 mb-6 animate-slide-up-fade-in">
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => {
+              setEditingTemplate(null)
+              setTemplateFormOpen(true)
+            }}
+            className="flex-1 border-border hover:bg-accent smooth-transition"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Template
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => {
+              setEditingBlock(null)
+              setBlockFormOpen(true)
+            }}
+            className="flex-1 border-border hover:bg-accent smooth-transition"
+          >
+            <Blocks className="w-4 h-4 mr-2" />
+            Block
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => {
+              setEditingFolder(null)
+              setFolderFormOpen(true)
+            }}
+            className="flex-1 border-border hover:bg-accent smooth-transition"
+          >
+            <Folder className="w-4 h-4 mr-2" />
+            Folder
+          </Button>
+        </div>
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full animate-slide-up-fade-in">
+          <TabsList className="grid w-full grid-cols-3 bg-muted">
+            <TabsTrigger value="templates" className="flex items-center space-x-2 data-[state=active]:bg-background data-[state=active]:text-foreground">
               <FileText className="w-4 h-4" />
-              <span>Templates ({filteredTemplates.length})</span>
+              <span className="hidden sm:inline">Templates ({filteredTemplates.length})</span>
+              <span className="sm:hidden">({filteredTemplates.length})</span>
             </TabsTrigger>
-            <TabsTrigger value="blocks" className="flex items-center space-x-2">
+            <TabsTrigger value="blocks" className="flex items-center space-x-2 data-[state=active]:bg-background data-[state=active]:text-foreground">
               <Blocks className="w-4 h-4" />
-              <span>Blocks ({filteredBlocks.length})</span>
+              <span className="hidden sm:inline">Blocks ({filteredBlocks.length})</span>
+              <span className="sm:hidden">({filteredBlocks.length})</span>
             </TabsTrigger>
-            <TabsTrigger value="folders" className="flex items-center space-x-2">
+            <TabsTrigger value="folders" className="flex items-center space-x-2 data-[state=active]:bg-background data-[state=active]:text-foreground">
               <Folder className="w-4 h-4" />
-              <span>Folders ({filteredFolders.length})</span>
+              <span className="hidden sm:inline">Folders ({filteredFolders.length})</span>
+              <span className="sm:hidden">({filteredFolders.length})</span>
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="templates" className="mt-6">
-            <Card>
+            <Card className="border-border bg-card">
               <CardHeader>
-                <CardTitle>Templates</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-foreground">Templates</CardTitle>
+                <CardDescription className="text-muted-foreground">
                   Manage your prompt templates here. Create, edit, and organize your templates.
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 {templatesLoading ? (
-                  <div className="text-center py-8">Loading templates...</div>
+                  <div className="text-center py-8">
+                    <div className="w-8 h-8 bg-primary/10 rounded-lg mx-auto mb-4 animate-pulse-glow flex items-center justify-center">
+                      <FileText className="w-4 h-4 text-primary" />
+                    </div>
+                    <p className="text-muted-foreground">Loading templates...</p>
+                  </div>
                 ) : (
                   <TemplateList
                     templates={filteredTemplates}
@@ -445,16 +498,21 @@ function AppContent() {
           </TabsContent>
 
           <TabsContent value="blocks" className="mt-6">
-            <Card>
+            <Card className="border-border bg-card">
               <CardHeader>
-                <CardTitle>Blocks</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-foreground">Blocks</CardTitle>
+                <CardDescription className="text-muted-foreground">
                   Manage your prompt blocks here. Blocks are reusable components for your templates.
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 {blocksLoading ? (
-                  <div className="text-center py-8">Loading blocks...</div>
+                  <div className="text-center py-8">
+                    <div className="w-8 h-8 bg-primary/10 rounded-lg mx-auto mb-4 animate-pulse-glow flex items-center justify-center">
+                      <Blocks className="w-4 h-4 text-primary" />
+                    </div>
+                    <p className="text-muted-foreground">Loading blocks...</p>
+                  </div>
                 ) : (
                   <BlockList
                     blocks={filteredBlocks}
@@ -467,16 +525,21 @@ function AppContent() {
           </TabsContent>
 
           <TabsContent value="folders" className="mt-6">
-            <Card>
+            <Card className="border-border bg-card">
               <CardHeader>
-                <CardTitle>Folders</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-foreground">Folders</CardTitle>
+                <CardDescription className="text-muted-foreground">
                   Organize your templates and blocks with folders.
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 {foldersLoading ? (
-                  <div className="text-center py-8">Loading folders...</div>
+                  <div className="text-center py-8">
+                    <div className="w-8 h-8 bg-primary/10 rounded-lg mx-auto mb-4 animate-pulse-glow flex items-center justify-center">
+                      <Folder className="w-4 h-4 text-primary" />
+                    </div>
+                    <p className="text-muted-foreground">Loading folders...</p>
+                  </div>
                 ) : (
                   <FolderList
                     folders={filteredFolders}
@@ -522,7 +585,17 @@ function App() {
     <ProtectedRoute>
       <QueryClientProvider client={queryClient}>
         <AppContent />
-        <Toaster />
+        <Toaster 
+          theme="system"
+          position="bottom-right"
+          toastOptions={{
+            style: {
+              background: 'hsl(var(--card))',
+              color: 'hsl(var(--card-foreground))',
+              border: '1px solid hsl(var(--border))',
+            },
+          }}
+        />
       </QueryClientProvider>
     </ProtectedRoute>
   )

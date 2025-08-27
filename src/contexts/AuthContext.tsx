@@ -26,7 +26,7 @@ interface AuthContextType {
   session: Session | null
   loading: boolean
   signIn: (email: string, password: string) => Promise<void>
-  signInWithGoogle: (idToken: string) => Promise<void>
+  signInWithGoogle: (accessToken: string) => Promise<void>
   signUp: (email: string, password: string, name?: string) => Promise<void>
   signOut: () => void
   refreshSession: () => Promise<void>
@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             
             if (response.ok) {
               const userData = await response.json()
-              setUser(userData.user)
+              setUser(userData.user || userData) // Handle different response formats
             } else {
               // Session invalid, clear it
               localStorage.removeItem('session')
@@ -74,6 +74,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       } catch (error) {
         console.error('Error loading session:', error)
+        // Clear invalid session data
+        localStorage.removeItem('session')
+        localStorage.removeItem('auth_token')
       } finally {
         setLoading(false)
       }
@@ -114,14 +117,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const signInWithGoogle = async (idToken: string) => {
+  const signInWithGoogle = async (accessToken: string) => {
     try {
+      // First, get user info from Google
+      const googleUserResponse = await fetch(`https://www.googleapis.com/oauth2/v2/userinfo?access_token=${accessToken}`)
+      
+      if (!googleUserResponse.ok) {
+        throw new Error('Failed to get user info from Google')
+      }
+      
+      const googleUser = await googleUserResponse.json()
+      
+      // Create a mock ID token with the necessary information
+      const mockIdToken = btoa(JSON.stringify({
+        sub: googleUser.id,
+        email: googleUser.email,
+        name: googleUser.name,
+        picture: googleUser.picture,
+        email_verified: googleUser.verified_email
+      }))
+
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/auth/sign_in_with_google`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id_token: idToken }),
+        body: JSON.stringify({ 
+          id_token: mockIdToken,
+          access_token: accessToken // Send access token as backup
+        }),
       })
 
       if (!response.ok) {
@@ -146,6 +170,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       router.push('/')
     } catch (error: any) {
+      console.error('Google sign-in error:', error)
       toast.error(error.message || 'Failed to sign in with Google')
       throw error
     }
@@ -176,7 +201,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         localStorage.setItem('session', JSON.stringify(data.session))
         localStorage.setItem('auth_token', data.session.access_token)
         
-        toast.success('Account created successfully! Please check your email to verify your account.')
+        toast.success('Account created successfully!')
         router.push('/')
       } else {
         toast.success(data.message || 'Account created! Please check your email to verify.')

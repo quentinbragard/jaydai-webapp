@@ -1,26 +1,24 @@
-'use client';
-
 import { useState, useEffect } from 'react'
 import { QueryClient, QueryClientProvider, useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button.jsx'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.jsx'
+import { Input } from '@/components/ui/input.jsx'
 import { toast, Toaster } from 'sonner'
 import { Plus, Folder, FileText, Blocks, Search } from 'lucide-react'
 
 // Import our components
-import { TemplateForm } from '@/components/TemplateForm'
-import { BlockForm } from '@/components/BlockForm'
-import { FolderForm } from '@/components/FolderForm'
-import { TemplateList } from '@/components/TemplateList'
-import { BlockList } from '@/components/BlockList'
-import { FolderList } from '@/components/FolderList'
+import { TemplateForm } from './components/TemplateForm.jsx'
+import { BlockForm } from './components/BlockForm.jsx'
+import { FolderForm } from './components/FolderForm.jsx'
+import { TemplateList } from './components/TemplateList.jsx'
+import { BlockList } from './components/BlockList.jsx'
+import { FolderList } from './components/FolderList.jsx'
 
 // Import API functions
-import { templatesApi, blocksApi, foldersApi } from '@/lib/api'
+import { templatesApi, blocksApi, foldersApi } from './lib/api.js'
 
-import '@/app/globals.css'
+import './App.css'
 
 // Create a client
 const queryClient = new QueryClient({

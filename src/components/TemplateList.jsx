@@ -34,7 +34,7 @@ export function TemplateList({ templates = [], folders = [], onEdit, onDelete })
   return (
     <>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {templates.map((template) => (
+        {Array.isArray(templates) && templates.map((template) => (
           <Card key={template.id} className="hover:shadow-md transition-shadow">
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between">

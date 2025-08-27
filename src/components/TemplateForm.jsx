@@ -76,7 +76,7 @@ export function TemplateForm({ open, onOpenChange, template = null, folders = []
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">No folder</SelectItem>
-                {folders.map((folder) => (
+                {Array.isArray(folders) && folders.map((folder) => (
                   <SelectItem key={folder.id} value={folder.id}>
                     {folder.title}
                   </SelectItem>

@@ -10,18 +10,13 @@ export function FolderForm({ open, onOpenChange, folder = null, folders = [], on
   const [formData, setFormData] = useState({
     title: folder?.title || '',
     description: folder?.description || '',
-    parent_folder_id: folder?.parent_folder_id ?? 'none',
+    parent_folder_id: folder?.parent_folder_id || 'none',
     type: folder?.type || 'user',
   })
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    // Convert "none" to null for parent_folder_id
-    const processedData = {
-      ...formData,
-      parent_folder_id: formData.parent_folder_id === 'none' ? null : formData.parent_folder_id
-    }
-    onSubmit(processedData)
+    onSubmit(formData)
     setFormData({
       title: '',
       description: '',
@@ -35,7 +30,7 @@ export function FolderForm({ open, onOpenChange, folder = null, folders = [], on
   }
 
   // Filter out the current folder from parent options to prevent circular references
-  const availableParentFolders = folders.filter(f => f.id !== folder?.id)
+  const availableParentFolders = Array.isArray(folders) ? folders.filter(f => f.id !== folder?.id) : []
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

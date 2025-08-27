@@ -53,7 +53,7 @@ export function BlockList({ blocks = [], onEdit, onDelete }) {
   return (
     <>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {blocks.map((block) => (
+        {Array.isArray(blocks) && blocks.map((block) => (
           <Card key={block.id} className="hover:shadow-md transition-shadow">
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between">

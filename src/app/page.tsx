@@ -1,3 +1,4 @@
+// src/app/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react'
@@ -7,7 +8,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Input } from '@/components/ui/input'
 import { toast, Toaster } from 'sonner'
-import { Plus, Folder, FileText, Blocks, Search } from 'lucide-react'
+import { Plus, Folder, FileText, Blocks, Search, LogOut, User, Settings } from 'lucide-react'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 // Import our components
 import { TemplateForm } from '@/components/TemplateForm'
@@ -16,6 +19,8 @@ import { FolderForm } from '@/components/FolderForm'
 import { TemplateList } from '@/components/TemplateList'
 import { BlockList } from '@/components/BlockList'
 import { FolderList } from '@/components/FolderList'
+import { ProtectedRoute } from '@/components/ProtectedRoute'
+import { useAuth } from '@/contexts/AuthContext'
 
 // Import API functions
 import { templatesApi, blocksApi, foldersApi } from '@/lib/api'
@@ -33,6 +38,7 @@ const queryClient = new QueryClient({
 })
 
 function AppContent() {
+  const { user, signOut } = useAuth()
   const [activeTab, setActiveTab] = useState('templates')
   const [searchQuery, setSearchQuery] = useState('')
   
@@ -54,12 +60,16 @@ function AppContent() {
     queryFn: async () => {
       try {
         const response = await templatesApi.getAll()
+        console.log('Templates API response:', response)
+        console.log('Templates data type:', typeof response.data)
+        console.log('Templates is array:', Array.isArray(response.data))
         return response.data
       } catch (error) {
         console.error('Error fetching templates:', error)
         return []
       }
     },
+    enabled: !!user, // Only fetch when user is authenticated
   })
 
   const { data: blocks = [], isLoading: blocksLoading } = useQuery({
@@ -67,12 +77,16 @@ function AppContent() {
     queryFn: async () => {
       try {
         const response = await blocksApi.getAll()
+        console.log('Blocks API response:', response)
+        console.log('Blocks data type:', typeof response.data)
+        console.log('Blocks is array:', Array.isArray(response.data))
         return response.data
       } catch (error) {
         console.error('Error fetching blocks:', error)
         return []
       }
     },
+    enabled: !!user,
   })
 
   const { data: folders = [], isLoading: foldersLoading } = useQuery({
@@ -80,12 +94,16 @@ function AppContent() {
     queryFn: async () => {
       try {
         const response = await foldersApi.getAll()
+        console.log('Folders API response:', response)
+        console.log('Folders data type:', typeof response.data)
+        console.log('Folders is array:', Array.isArray(response.data))
         return response.data
       } catch (error) {
         console.error('Error fetching folders:', error)
         return []
       }
     },
+    enabled: !!user,
   })
 
   // Mutations for templates
@@ -258,22 +276,30 @@ function AppContent() {
   }
 
   // Filter data based on search query
-  const filteredTemplates = templates.filter(template =>
+  const filteredTemplates = Array.isArray(templates) ? templates.filter(template =>
     template.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     template.content?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     template.description?.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  ) : []
 
-  const filteredBlocks = blocks.filter(block =>
+  const filteredBlocks = Array.isArray(blocks) ? blocks.filter(block =>
     block.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     block.content?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     block.description?.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  ) : []
 
-  const filteredFolders = folders.filter(folder =>
+  const filteredFolders = Array.isArray(folders) ? folders.filter(folder =>
     folder.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     folder.description?.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  ) : []
+
+  // Get user initials for avatar
+  const getUserInitials = () => {
+    if (!user) return '?'
+    const name = user.metadata?.name || user.email
+    if (!name) return '?'
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -287,40 +313,78 @@ function AppContent() {
               </div>
               <h1 className="text-2xl font-bold">Jaydai Prompt Manager</h1>
             </div>
-            <div className="flex items-center space-x-2">
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => {
-                  setEditingTemplate(null)
-                  setTemplateFormOpen(true)
-                }}
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                New Template
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => {
-                  setEditingBlock(null)
-                  setBlockFormOpen(true)
-                }}
-              >
-                <Blocks className="w-4 h-4 mr-2" />
-                New Block
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => {
-                  setEditingFolder(null)
-                  setFolderFormOpen(true)
-                }}
-              >
-                <Folder className="w-4 h-4 mr-2" />
-                New Folder
-              </Button>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    setEditingTemplate(null)
+                    setTemplateFormOpen(true)
+                  }}
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  New Template
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    setEditingBlock(null)
+                    setBlockFormOpen(true)
+                  }}
+                >
+                  <Blocks className="w-4 h-4 mr-2" />
+                  New Block
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    setEditingFolder(null)
+                    setFolderFormOpen(true)
+                  }}
+                >
+                  <Folder className="w-4 h-4 mr-2" />
+                  New Folder
+                </Button>
+              </div>
+              
+              {/* User Menu */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src="" alt={user?.metadata?.name || user?.email} />
+                      <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user?.metadata?.name || 'User'}</p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user?.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={signOut}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
@@ -455,12 +519,13 @@ function AppContent() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AppContent />
-      <Toaster />
-    </QueryClientProvider>
+    <ProtectedRoute>
+      <QueryClientProvider client={queryClient}>
+        <AppContent />
+        <Toaster />
+      </QueryClientProvider>
+    </ProtectedRoute>
   )
 }
 
 export default App
-

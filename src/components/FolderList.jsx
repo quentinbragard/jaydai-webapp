@@ -116,11 +116,11 @@ export function FolderList({ folders = [], onEdit, onDelete }) {
       </Card>
       
       {/* Render children */}
-      {folder.children.map(child => renderFolder(child, level + 1))}
+      {Array.isArray(folder.children) && folder.children.map(child => renderFolder(child, level + 1))}
     </div>
   )
 
-  if (folders.length === 0) {
+  if (!Array.isArray(folders) || folders.length === 0) {
     return (
       <div className="text-center py-8 text-muted-foreground">
         <Folder className="w-12 h-12 mx-auto mb-4 opacity-50" />
@@ -134,7 +134,7 @@ export function FolderList({ folders = [], onEdit, onDelete }) {
   return (
     <>
       <div className="space-y-4">
-        {folderHierarchy.map(folder => renderFolder(folder))}
+        {Array.isArray(folderHierarchy) && folderHierarchy.map(folder => renderFolder(folder))}
       </div>
 
       <AlertDialog open={!!deleteFolder} onOpenChange={() => setDeleteFolder(null)}>

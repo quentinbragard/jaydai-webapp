@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -42,23 +44,23 @@
 :root {
   /* Extension-matching Light Theme */
   --radius: 0.5rem;
-  
+
   /* Base Variables - Light Theme (matching extension) */
   --background: #ffffff;
   --foreground: #1a1d2b;
-  
+
   /* Primary Colors - Extension Blue */
   --primary: #3b4cb8;
   --primary-foreground: #ffffff;
-  
+
   /* Secondary Colors */
   --secondary: #f3f4f8;
   --secondary-foreground: #3b4cb8;
-  
+
   /* Accent Colors */
   --accent: #f0f2ff;
   --accent-foreground: #3b4cb8;
-  
+
   /* Supporting Colors */
   --muted: #f0f2f7;
   --muted-foreground: #6b7280;
@@ -66,16 +68,16 @@
   --card-foreground: #1a1d2b;
   --popover: #ffffff;
   --popover-foreground: #1a1d2b;
-  
+
   /* Feedback Colors */
   --destructive: #e54256;
   --destructive-foreground: #ffffff;
-  
+
   /* Border & UI Elements */
   --border: #e9ecf3;
   --input: #e9ecf3;
   --ring: #3b4cb8;
-  
+
   /* Chart Colors - Extension matching palette */
   --chart-1: #3b4cb8;
   --chart-2: #4a9d9a;
@@ -98,19 +100,19 @@
   /* Extension-matching Dark Theme */
   --background: #030816;
   --foreground: #eef1f8;
-  
+
   /* Primary Colors - Extension Blue (adjusted for dark) */
   --primary: #6d7ce6;
   --primary-foreground: #030816;
-  
+
   /* Secondary Colors */
   --secondary: #1a1f36;
   --secondary-foreground: #eef1f8;
-  
+
   /* Accent Colors */
   --accent: #1d2442;
   --accent-foreground: #eef1f8;
-  
+
   /* Supporting Colors */
   --muted: #181d30;
   --muted-foreground: #9ca8c2;
@@ -118,16 +120,16 @@
   --card-foreground: #eef1f8;
   --popover: #0c1023;
   --popover-foreground: #eef1f8;
-  
+
   /* Feedback Colors */
   --destructive: #e86981;
   --destructive-foreground: #030816;
-  
+
   /* Border & UI Elements */
   --border: #1a1f36;
   --input: #1a1f36;
   --ring: #6d7ce6;
-  
+
   /* Chart Colors - Coordinated with extension dark theme */
   --chart-1: #6d7ce6;
   --chart-2: #56c2c0;
@@ -150,7 +152,7 @@
   * {
     @apply border-border outline-ring/50;
   }
-  
+
   body {
     @apply bg-background text-foreground;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -318,11 +320,11 @@
   .mobile-padding {
     padding: 1rem;
   }
-  
+
   .mobile-text-center {
     text-align: center;
   }
-  
+
   .mobile-full-width {
     width: 100%;
   }

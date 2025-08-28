@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { GoogleSignInButton } from '@/components/GoogleSignInButton'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { 
   Loader2, 
   Mail, 
@@ -29,10 +30,12 @@ import {
   FileText
 } from 'lucide-react'
 import Link from 'next/link'
+import { useI18n } from '@/i18n/I18nProvider'
 
 export default function LoginPage() {
   const router = useRouter()
   const { signIn, signUp, user, loading: authLoading } = useAuth()
+  const { t } = useI18n()
   
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -77,17 +80,17 @@ export default function LoginPage() {
 
     // Validation
     if (!signupEmail || !signupPassword || !signupName) {
-      setError('Please fill in all required fields')
+      setError(t('auth.errors.fillRequired'))
       return
     }
 
     if (signupPassword !== signupConfirmPassword) {
-      setError('Passwords do not match')
+      setError(t('auth.errors.passwordsMismatch'))
       return
     }
 
     if (signupPassword.length < 6) {
-      setError('Password must be at least 6 characters long')
+      setError(t('auth.errors.passwordTooShort'))
       return
     }
 
@@ -110,7 +113,7 @@ export default function LoginPage() {
             <FileText className="w-6 h-6 text-primary" />
           </div>
           <Loader2 className="h-6 w-6 animate-spin text-primary mx-auto" />
-          <p className="text-muted-foreground">Loading...</p>
+          <p className="text-muted-foreground">{t('common.loading')}</p>
         </div>
       </div>
     )
@@ -134,19 +137,14 @@ export default function LoginPage() {
     }
   ]
 
-  const benefits = [
-    "Unlimited prompt templates",
-    "Reusable content blocks", 
-    "Team collaboration",
-    "Advanced analytics",
-    "Priority support"
-  ]
+  const benefits: string[] = (t('auth.benefits.items') as unknown as string[]) || []
 
   return (
     <div className="min-h-screen bg-background flex">
       {/* Theme Toggle - Fixed position */}
-      <div className="fixed top-6 right-6 z-50">
+      <div className="fixed top-6 right-6 z-50 flex items-center gap-2">
         <ThemeToggle />
+        <LanguageSwitcher />
       </div>
 
       {/* Left Side - Hero Section */}
@@ -167,13 +165,12 @@ export default function LoginPage() {
           </div>
           
           <h1 className="text-5xl font-bold mb-6 leading-tight text-foreground">
-            Supercharge Your
-            <span className="text-primary block mt-2">AI Prompts</span>
+            {t('auth.hero.headlineTop')}
+            <span className="text-primary block mt-2">{t('auth.hero.headlineBottom')}</span>
           </h1>
           
           <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-            The intelligent prompt management platform that transforms how you work with AI. 
-            Organize, reuse, and optimize your prompts like never before.
+            {t('auth.hero.tagline')}
           </p>
 
           <div className="space-y-6 mb-8">
@@ -200,7 +197,7 @@ export default function LoginPage() {
                 <div key={i} className="w-8 h-8 bg-primary rounded-full border-2 border-background"></div>
               ))}
             </div>
-            <span className="text-sm">Join 10,000+ AI enthusiasts</span>
+            <span className="text-sm">{t('auth.hero.cta')}</span>
           </div>
         </div>
       </div>
@@ -223,22 +220,19 @@ export default function LoginPage() {
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="grid w-full grid-cols-2 bg-muted">
                   <TabsTrigger value="login" className="data-[state=active]:bg-background data-[state=active]:text-foreground">
-                    Sign In
+                    {t('auth.tabs.signIn')}
                   </TabsTrigger>
                   <TabsTrigger value="signup" className="data-[state=active]:bg-background data-[state=active]:text-foreground">
-                    Sign Up
+                    {t('auth.tabs.signUp')}
                   </TabsTrigger>
                 </TabsList>
                 
                 <div className="mt-6 text-center">
                   <h2 className="text-2xl font-bold text-foreground">
-                    {activeTab === 'login' ? 'Welcome back' : 'Create account'}
+                    {activeTab === 'login' ? t('auth.titles.welcomeBack') : t('auth.titles.createAccount')}
                   </h2>
                   <p className="text-muted-foreground mt-2">
-                    {activeTab === 'login' 
-                      ? 'Sign in to access your prompt library' 
-                      : 'Start your AI journey with Jaydai'
-                    }
+                    {activeTab === 'login' ? t('auth.subtitles.signIn') : t('auth.subtitles.signUp')}
                   </p>
                 </div>
 
@@ -255,13 +249,13 @@ export default function LoginPage() {
                   <TabsContent value="login" className="space-y-4 mt-0">
                     <form onSubmit={handleLogin} className="space-y-4">
                       <div className="space-y-2">
-                        <Label htmlFor="login-email" className="text-foreground">Email</Label>
+                        <Label htmlFor="login-email" className="text-foreground">{t('auth.labels.email')}</Label>
                         <div className="relative">
                           <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                           <Input
                             id="login-email"
                             type="email"
-                            placeholder="you@example.com"
+                            placeholder={t('auth.placeholders.email')}
                             value={loginEmail}
                             onChange={(e) => setLoginEmail(e.target.value)}
                             className="pl-10 bg-background border-border focus:border-primary enhanced-focus smooth-transition"
@@ -272,13 +266,13 @@ export default function LoginPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="login-password" className="text-foreground">Password</Label>
+                        <Label htmlFor="login-password" className="text-foreground">{t('auth.labels.password')}</Label>
                         <div className="relative">
                           <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                           <Input
                             id="login-password"
                             type={showPassword ? "text" : "password"}
-                            placeholder="Enter your password"
+                            placeholder={t('auth.placeholders.enterPassword')}
                             value={loginPassword}
                             onChange={(e) => setLoginPassword(e.target.value)}
                             className="pl-10 pr-10 bg-background border-border focus:border-primary enhanced-focus smooth-transition"
@@ -299,7 +293,7 @@ export default function LoginPage() {
 
                       <div className="flex items-center justify-between">
                         <Link href="/forgot-password" className="text-sm text-primary hover:text-primary/80 smooth-transition">
-                          Forgot password?
+                          {t('auth.forgotPassword')}
                         </Link>
                       </div>
 
@@ -311,11 +305,11 @@ export default function LoginPage() {
                         {isLoading ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Signing in...
+                            {t('auth.buttons.signingIn')}
                           </>
                         ) : (
                           <>
-                            Sign In
+                            {t('auth.buttons.signIn')}
                             <ArrowRight className="ml-2 h-4 w-4" />
                           </>
                         )}
@@ -326,7 +320,7 @@ export default function LoginPage() {
                           <span className="w-full border-t border-border" />
                         </div>
                         <div className="relative flex justify-center text-xs uppercase">
-                          <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
+                          <span className="bg-card px-2 text-muted-foreground">{t('auth.orContinueWith')}</span>
                         </div>
                       </div>
 
@@ -394,13 +388,13 @@ export default function LoginPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="signup-password" className="text-foreground">Password</Label>
+                        <Label htmlFor="signup-password" className="text-foreground">{t('auth.labels.password')}</Label>
                         <div className="relative">
                           <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                           <Input
                             id="signup-password"
                             type={showPassword ? "text" : "password"}
-                            placeholder="Create a password"
+                            placeholder={t('auth.placeholders.createPassword')}
                             value={signupPassword}
                             onChange={(e) => setSignupPassword(e.target.value)}
                             className="pl-10 pr-10 bg-background border-border focus:border-primary enhanced-focus smooth-transition"
@@ -418,18 +412,18 @@ export default function LoginPage() {
                           </Button>
                         </div>
                         <p className="text-xs text-muted-foreground">
-                          Must be at least 6 characters
+                          {t('auth.benefits.passwordRule')}
                         </p>
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="signup-confirm-password" className="text-foreground">Confirm Password</Label>
+                        <Label htmlFor="signup-confirm-password" className="text-foreground">{t('auth.labels.confirmPassword')}</Label>
                         <div className="relative">
                           <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                           <Input
                             id="signup-confirm-password"
                             type={showConfirmPassword ? "text" : "password"}
-                            placeholder="Confirm your password"
+                            placeholder={t('auth.placeholders.confirmPassword')}
                             value={signupConfirmPassword}
                             onChange={(e) => setSignupConfirmPassword(e.target.value)}
                             className="pl-10 pr-10 bg-background border-border focus:border-primary enhanced-focus smooth-transition"
@@ -472,12 +466,12 @@ export default function LoginPage() {
                         {isLoading ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Creating account...
+                            {t('auth.buttons.creatingAccount')}
                           </>
                         ) : (
                           <>
                             <Sparkles className="mr-2 h-4 w-4" />
-                            Create Account
+                            {t('auth.buttons.createAccount')}
                           </>
                         )}
                       </Button>
@@ -485,11 +479,11 @@ export default function LoginPage() {
                       <p className="text-xs text-center text-muted-foreground">
                         By creating an account, you agree to our{' '}
                         <Link href="/terms" className="text-primary hover:text-primary/80 smooth-transition">
-                          Terms of Service
+                          {t('auth.legal.tos')}
                         </Link>{' '}
                         and{' '}
                         <Link href="/privacy" className="text-primary hover:text-primary/80 smooth-transition">
-                          Privacy Policy
+                          {t('auth.legal.privacy')}
                         </Link>
                       </p>
                     </form>

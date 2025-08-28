@@ -1,0 +1,132 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "new": "New",
+    "pro": "Pro",
+    "viewAll": "View All",
+    "configure": "Configure"
+  },
+  "dashboard": {
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    },
+    "welcome": {
+      "personal": "Welcome to your personal workspace",
+      "company": "Welcome to your company workspace",
+      "organization": "Welcome to {name}",
+      "back": "Welcome back"
+    },
+    "browseTemplates": "Browse Templates",
+    "createNew": "Create New",
+    "totalTemplates": "Total Templates",
+    "blocksCreated": "Blocks Created",
+    "folders": "Folders",
+    "wellOrganizedWorkspace": "Well organized workspace",
+    "activity": "Activity",
+    "active": "Active",
+    "lastUsedRecently": "Last used recently",
+    "analyticsDashboard": "Analytics Dashboard",
+    "analyticsDescription": "View usage statistics and team insights",
+    "viewAnalytics": "View Analytics",
+    "teamManagement": "Team Management",
+    "teamManagementDescription": "Manage team members and permissions",
+    "manageTeam": "Manage Team",
+    "accessControl": "Access Control",
+    "accessControlDescription": "Configure permissions and access rules",
+    "quickActions": "Quick Actions",
+    "quickActionsDescription": "Get started with common tasks",
+    "recentActivity": "Recent Activity",
+    "recentActivityDescription": "Your latest actions and updates",
+    "createdNewTemplate": "Created new template \"{title}\"",
+    "addedNewBlock": "Added new block \"{title}\"",
+    "organizedTemplatesInFolder": "Organized templates in \"{folder}\" folder",
+    "badges": {
+      "new": "New",
+      "pro": "Pro"
+    }
+  },
+  "templates": {
+    "title": "Templates",
+    "newTemplate": "New Template",
+    "searchPlaceholder": "Search templates...",
+    "yourTemplates": "Your Templates",
+    "manageAndOrganize": "Manage and organize your prompt templates in {space} space",
+    "loadingTemplates": "Loading templates...",
+    "count": "{count} template{suffix}"
+  },
+  "actions": {
+    "createTemplate": {
+      "title": "Create Template",
+      "description": "Start with a new prompt template"
+    },
+    "addBlock": {
+      "title": "Add Block",
+      "description": "Create reusable content blocks"
+    },
+    "newFolder": {
+      "title": "New Folder",
+      "description": "Organize your content"
+    }
+  },
+  "toasts": {
+    "templateCreated": "Template created successfully!",
+    "templateCreateFailed": "Failed to create template",
+    "templateUpdated": "Template updated successfully!",
+    "templateUpdateFailed": "Failed to update template",
+    "templateDeleted": "Template deleted successfully!",
+    "templateDeleteFailed": "Failed to delete template"
+  },
+  "auth": {
+    "tabs": { "signIn": "Sign In", "signUp": "Sign Up" },
+    "titles": { "welcomeBack": "Welcome back", "createAccount": "Create account" },
+    "subtitles": {
+      "signIn": "Sign in to access your prompt library",
+      "signUp": "Start your AI journey with Jaydai"
+    },
+    "labels": { "email": "Email", "password": "Password", "confirmPassword": "Confirm Password" },
+    "placeholders": {
+      "email": "you@example.com",
+      "enterPassword": "Enter your password",
+      "createPassword": "Create a password",
+      "confirmPassword": "Confirm your password"
+    },
+    "forgotPassword": "Forgot password?",
+    "buttons": {
+      "signIn": "Sign In",
+      "signingIn": "Signing in...",
+      "createAccount": "Create Account",
+      "creatingAccount": "Creating account..."
+    },
+    "orContinueWith": "Or continue with",
+    "hero": {
+      "headlineTop": "Supercharge Your",
+      "headlineBottom": "AI Prompts",
+      "tagline": "The intelligent prompt management platform that transforms how you work with AI. Organize, reuse, and optimize your prompts like never before.",
+      "cta": "Join 10,000+ AI enthusiasts"
+    },
+    "features": {
+      "smartOrganization": { "title": "Smart Organization", "desc": "Organize prompts with intelligent folders and tags" },
+      "lightningFast": { "title": "Lightning Fast", "desc": "Quick access to your most-used templates" },
+      "secureByDesign": { "title": "Secure by Design", "desc": "Your prompts are encrypted and secure" }
+    },
+    "benefits": {
+      "heading": "What you'll get:",
+      "items": [
+        "Unlimited prompt templates",
+        "Reusable content blocks",
+        "Team collaboration",
+        "Advanced analytics",
+        "Priority support"
+      ],
+      "passwordRule": "Must be at least 6 characters"
+    },
+    "legal": { "tos": "Terms of Service", "privacy": "Privacy Policy" },
+    "errors": {
+      "fillRequired": "Please fill in all required fields",
+      "passwordsMismatch": "Passwords do not match",
+      "passwordTooShort": "Password must be at least 6 characters long"
+    }
+  }
+}

@@ -14,10 +14,12 @@ import { Plus, Search, FileText, User, Building2, Users } from 'lucide-react'
 import { TemplateForm } from '@/components/TemplateForm'
 import { TemplateList } from '@/components/TemplateList'
 import { templatesApi, foldersApi } from '@/lib/api'
+import { useI18n } from '@/i18n/I18nProvider'
 
 export default function TemplatesPage() {
   const { user } = useAuth()
   const { currentSpace, currentOrganization, companyId } = useSpace()
+  const { t } = useI18n()
   const [searchQuery, setSearchQuery] = useState('')
   const [templateFormOpen, setTemplateFormOpen] = useState(false)
   const [editingTemplate, setEditingTemplate] = useState(null)
@@ -104,10 +106,10 @@ export default function TemplatesPage() {
     onSuccess: () => {
       queryClient.invalidateQueries(['templates'])
       setTemplateFormOpen(false)
-      toast.success('Template created successfully!')
+      toast.success(t('toasts.templateCreated'))
     },
     onError: (error) => {
-      toast.error('Failed to create template')
+      toast.error(t('toasts.templateCreateFailed'))
     },
   })
 
@@ -117,10 +119,10 @@ export default function TemplatesPage() {
       queryClient.invalidateQueries(['templates'])
       setEditingTemplate(null)
       setTemplateFormOpen(false)
-      toast.success('Template updated successfully!')
+      toast.success(t('toasts.templateUpdated'))
     },
     onError: () => {
-      toast.error('Failed to update template')
+      toast.error(t('toasts.templateUpdateFailed'))
     },
   })
 
@@ -128,10 +130,10 @@ export default function TemplatesPage() {
     mutationFn: templatesApi.delete,
     onSuccess: () => {
       queryClient.invalidateQueries(['templates'])
-      toast.success('Template deleted successfully!')
+      toast.success(t('toasts.templateDeleted'))
     },
     onError: () => {
-      toast.error('Failed to delete template')
+      toast.error(t('toasts.templateDeleteFailed'))
     },
   })
 
@@ -189,14 +191,14 @@ export default function TemplatesPage() {
       {/* Header */}
       <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Templates</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('templates.title')}</h1>
           <div className="flex items-center gap-2 mt-2">
             <Badge variant="outline" className="gap-1">
               {getSpaceIcon()}
               <span>{getSpaceLabel()}</span>
             </Badge>
             <p className="text-muted-foreground">
-              {filteredTemplates.length} template{filteredTemplates.length !== 1 ? 's' : ''}
+              {t('templates.count', { count: filteredTemplates.length, suffix: filteredTemplates.length !== 1 ? 's' : '' })}
             </p>
           </div>
         </div>
@@ -206,7 +208,7 @@ export default function TemplatesPage() {
           setTemplateFormOpen(true)
         }}>
           <Plus className="mr-2 h-4 w-4" />
-          New Template
+          {t('templates.newTemplate')}
         </Button>
       </div>
 
@@ -214,7 +216,7 @@ export default function TemplatesPage() {
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Search templates..."
+          placeholder={t('templates.searchPlaceholder')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="pl-10"
@@ -224,9 +226,9 @@ export default function TemplatesPage() {
       {/* Templates List */}
       <Card>
         <CardHeader>
-          <CardTitle>Your Templates</CardTitle>
+          <CardTitle>{t('templates.yourTemplates')}</CardTitle>
           <CardDescription>
-            Manage and organize your prompt templates in {currentSpace === 'personal' ? 'your personal' : currentSpace === 'company' ? 'the company' : currentOrganization?.name} space
+            {t('templates.manageAndOrganize', { space: currentSpace === 'personal' ? 'your personal' : currentSpace === 'company' ? 'the company' : (currentOrganization?.name || 'organization') })}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -235,7 +237,7 @@ export default function TemplatesPage() {
               <div className="w-8 h-8 bg-primary/10 rounded-lg mx-auto mb-4 animate-pulse-glow flex items-center justify-center">
                 <FileText className="w-4 h-4 text-primary" />
               </div>
-              <p className="text-muted-foreground">Loading templates...</p>
+              <p className="text-muted-foreground">{t('templates.loadingTemplates')}</p>
             </div>
           ) : (
             <TemplateList

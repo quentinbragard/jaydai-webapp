@@ -4,19 +4,20 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { useI18n } from '@/i18n/I18nProvider';
 
 export default function HomePage() {
   const router = useRouter();
   const { user, loading } = useAuth();
+  const { t } = useI18n();
+  const { locale } = useI18n();
 
   useEffect(() => {
     if (!loading) {
       if (user) {
-        // Redirect to dashboard if logged in
-        router.replace('/dashboard');
+        router.replace(`/${locale}/dashboard`);
       } else {
-        // Redirect to login if not logged in
-        router.replace('/login');
+        router.replace(`/${locale}/login`);
       }
     }
   }, [user, loading, router]);
@@ -28,7 +29,7 @@ export default function HomePage() {
         <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto animate-pulse">
           <div className="w-6 h-6 bg-primary rounded-lg" />
         </div>
-        <p className="text-muted-foreground">Loading...</p>
+        <p className="text-muted-foreground">{t('common.loading')}</p>
       </div>
     </div>
   );

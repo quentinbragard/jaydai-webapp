@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { SpaceProvider } from "@/contexts/SpaceContext";
 import { GoogleOAuthProvider } from "@/components/GoogleOAuthProvider";
+import { I18nProvider } from "@/i18n/I18nProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -38,7 +39,9 @@ export default function RootLayout({
         <GoogleOAuthProvider>
           <AuthProvider>
             <SpaceProvider>
-              {children}
+              <I18nProvider>
+                {children}
+              </I18nProvider>
             </SpaceProvider>
           </AuthProvider>
         </GoogleOAuthProvider>

@@ -1,0 +1,132 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "new": "Nouveau",
+    "pro": "Pro",
+    "viewAll": "Tout voir",
+    "configure": "Configurer"
+  },
+  "dashboard": {
+    "greeting": {
+      "morning": "Bonjour",
+      "afternoon": "Bon après-midi",
+      "evening": "Bonsoir"
+    },
+    "welcome": {
+      "personal": "Bienvenue dans votre espace personnel",
+      "company": "Bienvenue dans l'espace de votre entreprise",
+      "organization": "Bienvenue chez {name}",
+      "back": "Bon retour"
+    },
+    "browseTemplates": "Parcourir les modèles",
+    "createNew": "Créer",
+    "totalTemplates": "Modèles au total",
+    "blocksCreated": "Blocs créés",
+    "folders": "Dossiers",
+    "wellOrganizedWorkspace": "Espace de travail bien organisé",
+    "activity": "Activité",
+    "active": "Actif",
+    "lastUsedRecently": "Utilisé récemment",
+    "analyticsDashboard": "Tableau de bord analytique",
+    "analyticsDescription": "Consultez les statistiques d'utilisation et les insights d'équipe",
+    "viewAnalytics": "Voir les analyses",
+    "teamManagement": "Gestion d'équipe",
+    "teamManagementDescription": "Gérez les membres et leurs permissions",
+    "manageTeam": "Gérer l'équipe",
+    "accessControl": "Contrôle d'accès",
+    "accessControlDescription": "Configurer les permissions et les règles d'accès",
+    "quickActions": "Actions rapides",
+    "quickActionsDescription": "Commencez avec des tâches courantes",
+    "recentActivity": "Activité récente",
+    "recentActivityDescription": "Vos dernières actions et mises à jour",
+    "createdNewTemplate": "Nouveau modèle créé \"{title}\"",
+    "addedNewBlock": "Nouveau bloc ajouté \"{title}\"",
+    "organizedTemplatesInFolder": "Modèles organisés dans le dossier \"{folder}\"",
+    "badges": {
+      "new": "Nouveau",
+      "pro": "Pro"
+    }
+  },
+  "templates": {
+    "title": "Modèles",
+    "newTemplate": "Nouveau modèle",
+    "searchPlaceholder": "Rechercher des modèles...",
+    "yourTemplates": "Vos modèles",
+    "manageAndOrganize": "Gérez et organisez vos modèles d'invite dans l'espace {space}",
+    "loadingTemplates": "Chargement des modèles...",
+    "count": "{count} modèle{suffix}"
+  },
+  "actions": {
+    "createTemplate": {
+      "title": "Créer un modèle",
+      "description": "Commencer avec un nouveau modèle d'invite"
+    },
+    "addBlock": {
+      "title": "Ajouter un bloc",
+      "description": "Créer des blocs de contenu réutilisables"
+    },
+    "newFolder": {
+      "title": "Nouveau dossier",
+      "description": "Organisez votre contenu"
+    }
+  },
+  "toasts": {
+    "templateCreated": "Modèle créé avec succès !",
+    "templateCreateFailed": "Échec de la création du modèle",
+    "templateUpdated": "Modèle mis à jour avec succès !",
+    "templateUpdateFailed": "Échec de la mise à jour du modèle",
+    "templateDeleted": "Modèle supprimé avec succès !",
+    "templateDeleteFailed": "Échec de la suppression du modèle"
+  },
+  "auth": {
+    "tabs": { "signIn": "Connexion", "signUp": "Inscription" },
+    "titles": { "welcomeBack": "Bon retour", "createAccount": "Créer un compte" },
+    "subtitles": {
+      "signIn": "Connectez-vous pour accéder à votre bibliothèque de prompts",
+      "signUp": "Commencez votre aventure IA avec Jaydai"
+    },
+    "labels": { "email": "Email", "password": "Mot de passe", "confirmPassword": "Confirmez le mot de passe" },
+    "placeholders": {
+      "email": "vous@exemple.com",
+      "enterPassword": "Entrez votre mot de passe",
+      "createPassword": "Créez un mot de passe",
+      "confirmPassword": "Confirmez votre mot de passe"
+    },
+    "forgotPassword": "Mot de passe oublié ?",
+    "buttons": {
+      "signIn": "Se connecter",
+      "signingIn": "Connexion...",
+      "createAccount": "Créer un compte",
+      "creatingAccount": "Création du compte..."
+    },
+    "orContinueWith": "Ou continuer avec",
+    "hero": {
+      "headlineTop": "Booster vos",
+      "headlineBottom": "prompts IA",
+      "tagline": "La plateforme intelligente de gestion de prompts qui transforme votre manière de travailler avec l'IA. Organisez, réutilisez et optimisez vos prompts comme jamais auparavant.",
+      "cta": "Rejoignez 10 000+ passionnés d'IA"
+    },
+    "features": {
+      "smartOrganization": { "title": "Organisation intelligente", "desc": "Organisez vos prompts avec dossiers et tags" },
+      "lightningFast": { "title": "Ultra rapide", "desc": "Accédez rapidement à vos modèles les plus utilisés" },
+      "secureByDesign": { "title": "Sécurité intégrée", "desc": "Vos prompts sont chiffrés et sécurisés" }
+    },
+    "benefits": {
+      "heading": "Ce que vous obtenez :",
+      "items": [
+        "Modèles de prompts illimités",
+        "Blocs de contenu réutilisables",
+        "Collaboration d'équipe",
+        "Analyses avancées",
+        "Support prioritaire"
+      ],
+      "passwordRule": "Doit contenir au moins 6 caractères"
+    },
+    "legal": { "tos": "Conditions d'utilisation", "privacy": "Politique de confidentialité" },
+    "errors": {
+      "fillRequired": "Veuillez remplir tous les champs requis",
+      "passwordsMismatch": "Les mots de passe ne correspondent pas",
+      "passwordTooShort": "Le mot de passe doit contenir au moins 6 caractères"
+    }
+  }
+}

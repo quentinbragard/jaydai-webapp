@@ -7,6 +7,8 @@ import { ProtectedRoute } from "@/components/ProtectedRoute"
 import { Button } from "@/components/ui/button"
 import { Menu } from "lucide-react"
 import { useState } from "react"
+import { LanguageSwitcher } from "@/components/LanguageSwitcher"
+import { ThemeToggle } from "@/components/ThemeToggle"
 
 export default function DashboardLayout({
   children,
@@ -40,11 +42,23 @@ export default function DashboardLayout({
                   <span className="font-semibold">Jaydai</span>
                 </div>
               </div>
+              <div className="flex items-center gap-2">
+                <ThemeToggle />
+                <LanguageSwitcher />
+              </div>
+            </header>
+
+            {/* Desktop Header */}
+            <header className="hidden md:flex items-center justify-end border-b border-border bg-background px-6 py-3">
+              <div className="flex items-center gap-2">
+                <ThemeToggle />
+                <LanguageSwitcher />
+              </div>
             </header>
             
             {/* Main Content Area */}
             <main className="flex-1 overflow-y-auto">
-              <div className="container mx-auto px-4 py-6">
+              <div className="px-4 lg:px-6 py-6">
                 {children}
               </div>
             </main>

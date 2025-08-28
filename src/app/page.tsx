@@ -20,7 +20,7 @@ export default function HomePage() {
         router.replace(`/${locale}/login`);
       }
     }
-  }, [user, loading, router]);
+  }, [user, loading, router, locale]);
 
   // Show loading state while checking auth
   return (

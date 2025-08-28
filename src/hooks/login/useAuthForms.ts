@@ -37,8 +37,9 @@ export function useAuthForms() {
     setIsLoading(true)
     try {
       await signIn(loginEmail, loginPassword)
-    } catch (err: any) {
-      setError(err?.message || t('auth.errors.signInFailed'))
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : t('auth.errors.signInFailed')
+      setError(message)
     } finally {
       setIsLoading(false)
     }
@@ -64,8 +65,9 @@ export function useAuthForms() {
     setIsLoading(true)
     try {
       await signUp(signupEmail, signupPassword, signupName)
-    } catch (err: any) {
-      setError(err?.message || t('auth.errors.signUpFailed'))
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : t('auth.errors.signUpFailed')
+      setError(message)
     } finally {
       setIsLoading(false)
     }
@@ -111,4 +113,3 @@ export function useAuthForms() {
     handleSignup,
   }
 }
-

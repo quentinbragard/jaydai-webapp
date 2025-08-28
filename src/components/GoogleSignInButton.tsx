@@ -23,15 +23,16 @@ export function GoogleSignInButton({ className, disabled, children }: GoogleSign
       try {
         setIsLoading(true)
         await signInWithGoogle(tokenResponse.access_token)
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error('Google sign-in error:', error)
-        toast.error(error.message || 'Failed to sign in with Google')
+        const message = error instanceof Error ? error.message : 'Failed to sign in with Google'
+        toast.error(message)
       } finally {
         setIsLoading(false)
       }
     },
-    onError: (error) => {
-      console.error('Google sign-in failed:', error)
+    onError: (err) => {
+      console.error('Google sign-in failed:', err)
       toast.error('Failed to sign in with Google. Please try again.')
       setIsLoading(false)
     },

@@ -55,9 +55,10 @@ export function SpaceProvider({ children }: { children: ReactNode }) {
           }
         )
 
+        let metadataPayload: { data?: { company_id?: string } } = {}
         if (metadataResponse.ok) {
-          const metadataData = await metadataResponse.json()
-          setCompanyId(metadataData.data?.company_id || null)
+          metadataPayload = await metadataResponse.json()
+          setCompanyId(metadataPayload.data?.company_id || null)
         }
 
         // Fetch available organizations
@@ -70,8 +71,9 @@ export function SpaceProvider({ children }: { children: ReactNode }) {
           }
         )
 
+        let orgsData: { data?: Organization[] } = {}
         if (orgsResponse.ok) {
-          const orgsData = await orgsResponse.json()
+          orgsData = await orgsResponse.json()
           setAvailableOrganizations(orgsData.data || [])
           
           // If user has organizations, set the first one as default when switching to org space
@@ -86,9 +88,15 @@ export function SpaceProvider({ children }: { children: ReactNode }) {
         }
 
         // Restore saved space preference
-        const savedSpace = localStorage.getItem('preferred_space') as SpaceType
-        if (savedSpace && isValidSpace(savedSpace)) {
-          setCurrentSpace(savedSpace)
+        const savedSpace = localStorage.getItem('preferred_space') as SpaceType | null
+        if (savedSpace) {
+          const hasCompany = Boolean(metadataPayload?.data?.company_id)
+          const hasOrgs = Boolean(orgsData?.data && orgsData.data.length > 0)
+          if (savedSpace === 'personal' ||
+              (savedSpace === 'company' && hasCompany) ||
+              (savedSpace === 'organization' && hasOrgs)) {
+            setCurrentSpace(savedSpace)
+          }
         }
       } catch (error) {
         console.error('Error loading space data:', error)
@@ -100,13 +108,6 @@ export function SpaceProvider({ children }: { children: ReactNode }) {
 
     loadSpaceData()
   }, [user])
-
-  const isValidSpace = (space: string): space is SpaceType => {
-    if (space === 'personal') return true
-    if (space === 'company' && companyId) return true
-    if (space === 'organization' && availableOrganizations.length > 0) return true
-    return false
-  }
 
   const switchSpace = (space: SpaceType, organizationId?: string) => {
     // Validate space switch

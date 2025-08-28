@@ -24,7 +24,7 @@ export function RecentActivity() {
               <FileText className="h-4 w-4 text-blue-600" />
             </div>
             <div className="flex-1 space-y-1">
-              <p className="text-sm font-medium">Created new template "Email Response"</p>
+              <p className="text-sm font-medium">Created new template &quot;Email Response&quot;</p>
               <p className="text-xs text-muted-foreground">2 hours ago</p>
             </div>
           </div>
@@ -34,7 +34,7 @@ export function RecentActivity() {
               <Blocks className="h-4 w-4 text-purple-600" />
             </div>
             <div className="flex-1 space-y-1">
-              <p className="text-sm font-medium">Added new block "Professional Tone"</p>
+              <p className="text-sm font-medium">Added new block &quot;Professional Tone&quot;</p>
               <p className="text-xs text-muted-foreground">5 hours ago</p>
             </div>
           </div>
@@ -44,7 +44,7 @@ export function RecentActivity() {
               <Folder className="h-4 w-4 text-green-600" />
             </div>
             <div className="flex-1 space-y-1">
-              <p className="text-sm font-medium">Organized templates in "Marketing" folder</p>
+              <p className="text-sm font-medium">Organized templates in &quot;Marketing&quot; folder</p>
               <p className="text-xs text-muted-foreground">Yesterday</p>
             </div>
           </div>
@@ -53,4 +53,3 @@ export function RecentActivity() {
     </Card>
   )
 }
-

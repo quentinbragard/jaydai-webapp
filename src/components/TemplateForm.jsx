@@ -7,6 +7,12 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 
+/**
+ * @typedef {{ id?: string, title?: string, description?: string, content?: string, folder_id?: string | null, is_free?: boolean }} Template
+ * @typedef {{ id: string, title?: string }} Folder
+ *
+ * @param {{ open: boolean, onOpenChange: (v: boolean) => void, template?: Template | null, folders?: Folder[], onSubmit: (data: Template) => void }} props
+ */
 export function TemplateForm({ open, onOpenChange, template = null, folders = [], onSubmit }) {
   const [formData, setFormData] = useState({
     title: template?.title || '',
@@ -119,4 +125,3 @@ export function TemplateForm({ open, onOpenChange, template = null, folders = []
     </Dialog>
   )
 }
-

@@ -1,7 +1,7 @@
 // src/app/(dashboard)/templates/page.tsx
 'use client';
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSpace } from '@/contexts/SpaceContext'
 import { useAuth } from '@/contexts/AuthContext'
@@ -16,32 +16,56 @@ import { TemplateList } from '@/components/TemplateList'
 import { templatesApi, foldersApi } from '@/lib/api'
 import { useI18n } from '@/i18n/I18nProvider'
 
+type Template = {
+  id: string
+  title?: string
+  content?: string
+  description?: string
+  user_id?: string
+  company_id?: string
+  organization_id?: string
+  folder_id?: string | null
+  created_at?: string
+  is_free?: boolean
+  usage_count?: number
+}
+
+type Folder = {
+  id: string
+  title?: string
+  user_id?: string
+  company_id?: string
+  organization_id?: string
+}
+
 export default function TemplatesPage() {
   const { user } = useAuth()
   const { currentSpace, currentOrganization, companyId } = useSpace()
   const { t } = useI18n()
   const [searchQuery, setSearchQuery] = useState('')
   const [templateFormOpen, setTemplateFormOpen] = useState(false)
-  const [editingTemplate, setEditingTemplate] = useState(null)
+  const [editingTemplate, setEditingTemplate] = useState<Template | null>(null)
   const queryClient = useQueryClient()
 
   // Fetch templates based on current space
-  const { data: templates = [], isLoading: templatesLoading } = useQuery({
+  const { data: templates = [], isLoading: templatesLoading } = useQuery<Template[]>({
     queryKey: ['templates', currentSpace, currentOrganization?.id, companyId],
     queryFn: async () => {
       try {
         const response = await templatesApi.getAll()
-        const rawTemplates = response.data
-        const allTemplates = Array.isArray(rawTemplates)
-          ? rawTemplates
-          : Array.isArray(rawTemplates?.results)
-            ? rawTemplates.results
-            : Array.isArray(rawTemplates?.data)
-              ? rawTemplates.data
-              : []
+        const raw = (response as { data?: unknown }).data as unknown
+        const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null
+        let allTemplates: unknown[] = []
+        if (Array.isArray(raw)) {
+          allTemplates = raw
+        } else if (isObj(raw) && Array.isArray(raw.results as unknown[])) {
+          allTemplates = raw.results as unknown[]
+        } else if (isObj(raw) && Array.isArray(raw.data as unknown[])) {
+          allTemplates = raw.data as unknown[]
+        }
         
         // Filter templates based on current space
-        return allTemplates.filter(template => {
+        return (allTemplates as Template[]).filter(template => {
           switch (currentSpace) {
             case 'personal':
               return template.user_id === user?.id
@@ -62,22 +86,24 @@ export default function TemplatesPage() {
   })
 
   // Fetch folders for the current space
-  const { data: folders = [] } = useQuery({
+  const { data: folders = [] } = useQuery<Folder[]>({
     queryKey: ['folders', currentSpace, currentOrganization?.id, companyId],
     queryFn: async () => {
       try {
         const response = await foldersApi.getAll()
-        const rawFolders = response.data
-        const allFolders = Array.isArray(rawFolders)
-          ? rawFolders
-          : Array.isArray(rawFolders?.results)
-            ? rawFolders.results
-            : Array.isArray(rawFolders?.data)
-              ? rawFolders.data
-              : []
+        const raw = (response as { data?: unknown }).data as unknown
+        const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null
+        let allFolders: unknown[] = []
+        if (Array.isArray(raw)) {
+          allFolders = raw
+        } else if (isObj(raw) && Array.isArray(raw.results as unknown[])) {
+          allFolders = raw.results as unknown[]
+        } else if (isObj(raw) && Array.isArray(raw.data as unknown[])) {
+          allFolders = raw.data as unknown[]
+        }
         
         // Filter folders based on current space
-        return allFolders.filter(folder => {
+        return (allFolders as Folder[]).filter(folder => {
           switch (currentSpace) {
             case 'personal':
               return folder.user_id === user?.id
@@ -99,38 +125,38 @@ export default function TemplatesPage() {
 
   // Template mutations
   const createTemplateMutation = useMutation({
-    mutationFn: async (data) => {
+    mutationFn: async (data: Partial<Template> & Record<string, unknown>) => {
       // Add space-specific fields
-      const templateData = { ...data }
+      const templateData: Partial<Template> & Record<string, unknown> = { ...data }
       
       switch (currentSpace) {
         case 'personal':
           templateData.user_id = user?.id
           break
         case 'company':
-          templateData.company_id = companyId
+          if (companyId) templateData.company_id = companyId
           break
         case 'organization':
-          templateData.organization_id = currentOrganization?.id
+          if (currentOrganization?.id) templateData.organization_id = currentOrganization.id
           break
       }
       
       return templatesApi.create(templateData)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['templates'])
+      queryClient.invalidateQueries({ queryKey: ['templates'] })
       setTemplateFormOpen(false)
       toast.success(t('toasts.templateCreated'))
     },
-    onError: (error) => {
+    onError: () => {
       toast.error(t('toasts.templateCreateFailed'))
     },
   })
 
   const updateTemplateMutation = useMutation({
-    mutationFn: ({ id, data }) => templatesApi.update(id, data),
+    mutationFn: (vars: { id: string, data: Partial<Template> }) => templatesApi.update(vars.id, vars.data),
     onSuccess: () => {
-      queryClient.invalidateQueries(['templates'])
+      queryClient.invalidateQueries({ queryKey: ['templates'] })
       setEditingTemplate(null)
       setTemplateFormOpen(false)
       toast.success(t('toasts.templateUpdated'))
@@ -141,9 +167,9 @@ export default function TemplatesPage() {
   })
 
   const deleteTemplateMutation = useMutation({
-    mutationFn: templatesApi.delete,
+    mutationFn: (id: string) => templatesApi.delete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries(['templates'])
+      queryClient.invalidateQueries({ queryKey: ['templates'] })
       toast.success(t('toasts.templateDeleted'))
     },
     onError: () => {
@@ -152,22 +178,22 @@ export default function TemplatesPage() {
   })
 
   // Event handlers
-  const handleCreateTemplate = (data) => {
+  const handleCreateTemplate = (data: Partial<Template> & Record<string, unknown>) => {
     createTemplateMutation.mutate({ ...data, type: currentSpace === 'personal' ? 'user' : currentSpace })
   }
 
-  const handleEditTemplate = (template) => {
+  const handleEditTemplate = (template: Template) => {
     setEditingTemplate(template)
     setTemplateFormOpen(true)
   }
 
-  const handleUpdateTemplate = (data) => {
+  const handleUpdateTemplate = (data: Partial<Template>) => {
     if (editingTemplate) {
       updateTemplateMutation.mutate({ id: editingTemplate.id, data })
     }
   }
 
-  const handleDeleteTemplate = (id) => {
+  const handleDeleteTemplate = (id: string) => {
     deleteTemplateMutation.mutate(id)
   }
 

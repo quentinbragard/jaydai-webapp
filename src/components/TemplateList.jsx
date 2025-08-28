@@ -1,4 +1,13 @@
 import { useState } from 'react'
+
+/**
+ * @typedef {{ id: string, title?: string, description?: string, content?: string, folder_id?: string, created_at?: string, is_free?: boolean, usage_count?: number }} Template
+ * @typedef {{ id: string, title?: string }} Folder
+ */
+
+/**
+ * @param {{ templates?: Template[], folders?: Folder[], onEdit: (t: Template) => void, onDelete: (id: string) => void }} props
+ */
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -123,4 +132,3 @@ export function TemplateList({ templates = [], folders = [], onEdit, onDelete })
     </>
   )
 }
-

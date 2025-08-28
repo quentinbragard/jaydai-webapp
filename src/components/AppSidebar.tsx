@@ -5,7 +5,6 @@ import React from 'react'
 import { useSpace } from '@/contexts/SpaceContext'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter, usePathname } from 'next/navigation'
-import { Button } from '@/components/ui/button'
 import {
   Select,
   SelectContent,
@@ -24,10 +23,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-  SidebarTrigger,
+  
 } from '@/components/ui/sidebar'
 import {
   DropdownMenu,
@@ -38,7 +34,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
+import Image from 'next/image'
 import { Separator } from '@/components/ui/separator'
 import {
   FileText,
@@ -49,7 +45,7 @@ import {
   Users,
   BarChart3,
   BookOpen,
-  ChevronDown,
+  
   Building2,
   User,
   LogOut,
@@ -66,7 +62,6 @@ export function AppSidebar() {
     currentSpace, 
     currentOrganization, 
     availableOrganizations,
-    companyId,
     switchSpace,
     hasCompanyAccess,
     hasOrganizationAccess 
@@ -236,9 +231,11 @@ export function AppSidebar() {
                     <SelectItem key={org.id} value={`org-${org.id}`}>
                       <div className="flex items-center gap-2">
                         {org.image_url ? (
-                          <img 
-                            src={org.image_url} 
+                          <Image
+                            src={org.image_url}
                             alt={org.name}
+                            width={16}
+                            height={16}
                             className="h-4 w-4 rounded"
                           />
                         ) : (

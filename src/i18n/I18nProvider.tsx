@@ -6,20 +6,27 @@ import en from "./locales/en.json";
 import fr from "./locales/fr.json";
 
 type Locale = "en" | "fr";
-type Dictionary = Record<string, any>;
+type Dictionary = Record<string, unknown>;
 
 type I18nContextType = {
   locale: Locale;
   setLocale: (locale: Locale) => void;
-  t: (key: string, vars?: Record<string, string | number>) => any;
+  t: (key: string, vars?: Record<string, string | number> | string) => string;
 };
 
 const I18nContext = createContext<I18nContextType | null>(null);
 
 const DICTS: Record<Locale, Dictionary> = { en, fr };
 
-function getByPath(obj: Dictionary, path: string): string | undefined {
-  return path.split(".").reduce<any>((acc, part) => (acc ? acc[part] : undefined), obj);
+function getByPath(obj: Dictionary, path: string): unknown {
+  return path
+    .split(".")
+    .reduce<unknown>((acc, part) => {
+      if (acc && typeof acc === "object" && acc !== null) {
+        return (acc as Record<string, unknown>)[part];
+      }
+      return undefined;
+    }, obj);
 }
 
 function interpolate(input: string, vars?: Record<string, string | number>) {
@@ -58,7 +65,6 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
       if (typeof document !== "undefined") document.documentElement.lang = seg;
       if (typeof window !== "undefined") localStorage.setItem("locale", seg);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPath]);
 
   const setLocale = (loc: Locale) => {
@@ -69,13 +75,18 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   const dict = useMemo(() => DICTS[locale], [locale]);
 
-  const t = useMemo(() => (key: string, vars?: Record<string, string | number>) => {
-    const found = getByPath(dict, key);
-    if (typeof found === 'string') return interpolate(found, vars);
-    if (found !== undefined) return found;
-    // fallback to key when missing
-    return key;
-  }, [dict]);
+  const t = useMemo(
+    () => (key: string, vars?: Record<string, string | number> | string) => {
+      const found = getByPath(dict, key);
+      if (typeof found === "string") {
+        return interpolate(found, typeof vars === 'object' && vars !== null ? (vars as Record<string, string | number>) : undefined);
+      }
+      if (typeof vars === 'string') return vars;
+      // fallback to key when missing or non-string
+      return key;
+    },
+    [dict]
+  );
 
   const value = useMemo(() => ({ locale, setLocale, t }), [locale, t]);
 

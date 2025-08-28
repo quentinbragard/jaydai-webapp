@@ -1,7 +1,7 @@
 // src/contexts/AuthContext.tsx
 'use client'
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
@@ -39,6 +39,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
+
+  const signOut = useCallback(() => {
+    setUser(null)
+    setSession(null)
+    localStorage.removeItem('session')
+    localStorage.removeItem('auth_token')
+    toast.success('Successfully signed out')
+    router.push('/login')
+  }, [router])
+
+  const refreshSession = useCallback(async () => {
+    try {
+      const storedSession = localStorage.getItem('session')
+      if (!storedSession) return
+
+      const parsedSession = JSON.parse(storedSession)
+      
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/auth/refresh_token`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refresh_token: parsedSession.refresh_token }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to refresh session')
+      }
+
+      const data = await response.json()
+      
+      setSession(data.session)
+      localStorage.setItem('session', JSON.stringify(data.session))
+      localStorage.setItem('auth_token', data.session.access_token)
+    } catch (error) {
+      console.error('Error refreshing session:', error)
+      signOut()
+    }
+  }, [signOut])
 
   // Load session from localStorage on mount
   useEffect(() => {
@@ -83,7 +122,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     loadSession()
-  }, [])
+  }, [refreshSession])
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -111,8 +150,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       toast.success('Successfully signed in!')
       router.push('/')
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to sign in')
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to sign in'
+      toast.error(message)
       throw error
     }
   }
@@ -169,9 +209,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       
       router.push('/')
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Google sign-in error:', error)
-      toast.error(error.message || 'Failed to sign in with Google')
+      const message = error instanceof Error ? error.message : 'Failed to sign in with Google'
+      toast.error(message)
       throw error
     }
   }
@@ -207,50 +248,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         toast.success(data.message || 'Account created! Please check your email to verify.')
         router.push('/login')
       }
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to create account')
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to create account'
+      toast.error(message)
       throw error
     }
   }
 
-  const signOut = () => {
-    setUser(null)
-    setSession(null)
-    localStorage.removeItem('session')
-    localStorage.removeItem('auth_token')
-    toast.success('Successfully signed out')
-    router.push('/login')
-  }
-
-  const refreshSession = async () => {
-    try {
-      const storedSession = localStorage.getItem('session')
-      if (!storedSession) return
-
-      const parsedSession = JSON.parse(storedSession)
-      
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/auth/refresh_token`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ refresh_token: parsedSession.refresh_token }),
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to refresh session')
-      }
-
-      const data = await response.json()
-      
-      setSession(data.session)
-      localStorage.setItem('session', JSON.stringify(data.session))
-      localStorage.setItem('auth_token', data.session.access_token)
-    } catch (error) {
-      console.error('Error refreshing session:', error)
-      signOut()
-    }
-  }
 
   // Set up automatic token refresh
   useEffect(() => {
@@ -270,7 +274,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       return () => clearTimeout(timeout)
     }
-  }, [session])
+  }, [session, refreshSession])
 
   const value = {
     user,

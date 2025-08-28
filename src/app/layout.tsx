@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { SpaceProvider } from "@/contexts/SpaceContext";
 import { GoogleOAuthProvider } from "@/components/GoogleOAuthProvider";
+import { QueryProvider } from "@/contexts/QueryProvider";
 import { I18nProvider } from "@/i18n/I18nProvider";
 import "./globals.css";
 
@@ -40,7 +41,9 @@ export default function RootLayout({
           <AuthProvider>
             <SpaceProvider>
               <I18nProvider>
-                {children}
+                <QueryProvider>
+                  {children}
+                </QueryProvider>
               </I18nProvider>
             </SpaceProvider>
           </AuthProvider>

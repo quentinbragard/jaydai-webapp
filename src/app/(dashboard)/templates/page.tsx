@@ -31,7 +31,14 @@ export default function TemplatesPage() {
     queryFn: async () => {
       try {
         const response = await templatesApi.getAll()
-        const allTemplates = response.data || []
+        const rawTemplates = response.data
+        const allTemplates = Array.isArray(rawTemplates)
+          ? rawTemplates
+          : Array.isArray(rawTemplates?.results)
+            ? rawTemplates.results
+            : Array.isArray(rawTemplates?.data)
+              ? rawTemplates.data
+              : []
         
         // Filter templates based on current space
         return allTemplates.filter(template => {
@@ -60,7 +67,14 @@ export default function TemplatesPage() {
     queryFn: async () => {
       try {
         const response = await foldersApi.getAll()
-        const allFolders = response.data || []
+        const rawFolders = response.data
+        const allFolders = Array.isArray(rawFolders)
+          ? rawFolders
+          : Array.isArray(rawFolders?.results)
+            ? rawFolders.results
+            : Array.isArray(rawFolders?.data)
+              ? rawFolders.data
+              : []
         
         // Filter folders based on current space
         return allFolders.filter(folder => {

@@ -21,12 +21,21 @@ interface Session {
   expires_at: number
 }
 
+type GoogleUserInfo = {
+  id?: string
+  email?: string
+  name?: string
+  picture?: string
+  verified_email?: boolean
+  [key: string]: unknown
+}
+
 interface AuthContextType {
   user: User | null
   session: Session | null
   loading: boolean
   signIn: (email: string, password: string) => Promise<void>
-  signInWithGoogle: (accessToken: string, userInfo?: any) => Promise<void>
+  signInWithGoogle: (accessToken: string, userInfo?: GoogleUserInfo) => Promise<void>
   signUp: (email: string, password: string, name?: string) => Promise<void>
   signOut: () => void
   refreshSession: () => Promise<void>
@@ -157,7 +166,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const signInWithGoogle = async (accessToken: string, userInfo?: any) => {
+  const signInWithGoogle = async (accessToken: string, userInfo?: GoogleUserInfo) => {
     try {
       // Send the access token and user info directly to backend
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/auth/sign_in_with_google`, {

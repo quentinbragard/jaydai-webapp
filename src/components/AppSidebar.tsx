@@ -188,10 +188,24 @@ export function AppSidebar() {
       <SidebarHeader className="border-b border-sidebar-border">
         <div className="flex items-center justify-between p-2">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center animate-gentle-pulse">
-              <FileText className="w-4 h-4 text-primary-foreground" />
-            </div>
-            <span className="text-lg font-bold">Jaydai</span>
+            {/* Light theme full logo */}
+            <Image
+              src="/images/full-logo-dark.png"
+              alt="Jaydai"
+              width={120}
+              height={28}
+              className="block dark:hidden"
+              priority
+            />
+            {/* Dark theme full logo */}
+            <Image
+              src="/images/full-logo-white.png"
+              alt="Jaydai"
+              width={120}
+              height={28}
+              className="hidden dark:block"
+              priority
+            />
           </div>
         </div>
         

@@ -12,6 +12,7 @@ import { ThemeToggle } from '@/components/ThemeToggle'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { Loader2, AlertCircle, FileText } from 'lucide-react'
 import { useI18n } from '@/i18n/I18nProvider'
+import Image from 'next/image'
 import { AuthHero } from '@/components/auth/AuthHero'
 import { LoginForm } from '@/components/auth/LoginForm'
 import { SignupForm } from '@/components/auth/SignupForm'
@@ -65,12 +66,24 @@ export default function LoginPage() {
         <div className="w-full max-w-md space-y-6 animate-slide-up-fade-in">
           {/* Mobile Logo */}
           <div className="lg:hidden text-center mb-8">
-            <div className="inline-flex items-center space-x-3">
-              <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
-                <FileText className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <span className="text-2xl font-bold text-foreground">Jaydai</span>
-            </div>
+            {/* Light theme logo */}
+            <Image
+              src="/images/letter-logo-dark.svg"
+              alt="Jaydai"
+              width={40}
+              height={40}
+              className="mx-auto block dark:hidden"
+              priority
+            />
+            {/* Dark theme logo */}
+            <Image
+              src="/images/letter-logo-white.png"
+              alt="Jaydai"
+              width={40}
+              height={40}
+              className="mx-auto hidden dark:block"
+              priority
+            />
           </div>
 
           <Card className="border border-border bg-card shadow-lg">

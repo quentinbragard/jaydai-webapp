@@ -22,7 +22,18 @@ export function GoogleSignInButton({ className, disabled, children }: GoogleSign
     onSuccess: async (tokenResponse) => {
       try {
         setIsLoading(true)
-        await signInWithGoogle(tokenResponse.access_token)
+        
+        // Get user info from Google using the access token
+        const userInfoResponse = await fetch(`https://www.googleapis.com/oauth2/v2/userinfo?access_token=${tokenResponse.access_token}`)
+        
+        if (!userInfoResponse.ok) {
+          throw new Error('Failed to get user info from Google')
+        }
+        
+        const userInfo = await userInfoResponse.json()
+        
+        // Call our backend with the access token and user info
+        await signInWithGoogle(tokenResponse.access_token, userInfo)
       } catch (error: unknown) {
         console.error('Google sign-in error:', error)
         const message = error instanceof Error ? error.message : 'Failed to sign in with Google'
@@ -36,7 +47,7 @@ export function GoogleSignInButton({ className, disabled, children }: GoogleSign
       toast.error('Failed to sign in with Google. Please try again.')
       setIsLoading(false)
     },
-    flow: 'implicit', // Use implicit flow for client-side authentication
+    flow: 'implicit', // Keep using implicit flow but handle it properly
   })
 
   // Check if Google Client ID is available

@@ -88,6 +88,7 @@
     "labels": { "email": "Email", "password": "Mot de passe", "confirmPassword": "Confirmez le mot de passe" },
     "placeholders": {
       "email": "vous@exemple.com",
+      "fullName": "John Doe",
       "enterPassword": "Entrez votre mot de passe",
       "createPassword": "Créez un mot de passe",
       "confirmPassword": "Confirmez votre mot de passe"

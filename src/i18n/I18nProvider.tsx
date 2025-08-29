@@ -12,6 +12,7 @@ type I18nContextType = {
   locale: Locale;
   setLocale: (locale: Locale) => void;
   t: (key: string, vars?: Record<string, string | number> | string) => string;
+  get: <T = unknown>(key: string) => T | undefined;
 };
 
 const I18nContext = createContext<I18nContextType | null>(null);
@@ -88,7 +89,15 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     [dict]
   );
 
-  const value = useMemo(() => ({ locale, setLocale, t }), [locale, t]);
+  const get = useMemo(
+    () => <T = unknown>(key: string): T | undefined => {
+      const found = getByPath(dict, key);
+      return found as T | undefined;
+    },
+    [dict]
+  );
+
+  const value = useMemo(() => ({ locale, setLocale, t, get }), [locale, t, get]);
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }

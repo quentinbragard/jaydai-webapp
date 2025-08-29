@@ -39,7 +39,7 @@ export default function DashboardLayout({
                   <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center">
                     <span className="text-xs text-primary-foreground font-bold">J</span>
                   </div>
-                  <span className="font-semibold">Jaydai</span>
+              <span className="font-semibold sr-only">Jaydai</span>
                 </div>
               </div>
               <div className="flex items-center gap-2">

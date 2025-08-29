@@ -1,7 +1,8 @@
 // src/components/auth/AuthHero.tsx
 'use client'
 
-import { FileText, Layers, Shield, Zap } from 'lucide-react'
+import Image from 'next/image'
+import { Layers, Shield, Zap } from 'lucide-react'
 import { useI18n } from '@/i18n/I18nProvider'
 
 export function AuthHero() {
@@ -21,10 +22,24 @@ export function AuthHero() {
 
       <div className="relative z-10 max-w-lg animate-slide-up-fade-in">
         <div className="flex items-center space-x-3 mb-8">
-          <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center animate-gentle-pulse">
-            <FileText className="w-6 h-6 text-primary-foreground" />
-          </div>
-          <span className="text-3xl font-bold text-foreground">Jaydai</span>
+          {/* Light theme full logo */}
+          <Image
+            src="/images/full-logo-dark.png"
+            alt="Jaydai"
+            width={180}
+            height={40}
+            className="block dark:hidden"
+            priority
+          />
+          {/* Dark theme full logo */}
+          <Image
+            src="/images/full-logo-white.png"
+            alt="Jaydai"
+            width={180}
+            height={40}
+            className="hidden dark:block"
+            priority
+          />
         </div>
 
         <h1 className="text-5xl font-bold mb-6 leading-tight text-foreground">
@@ -66,4 +81,3 @@ export function AuthHero() {
     </div>
   )
 }
-

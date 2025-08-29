@@ -40,8 +40,8 @@ export function SignupForm({
   isLoading,
   onSubmit,
 }: SignupFormProps) {
-  const { t } = useI18n()
-  const benefits: string[] = (t('auth.benefits.items') as unknown as string[]) || []
+  const { t, get } = useI18n()
+  const benefits: string[] = Array.isArray(get<string[]>('auth.benefits.items')) ? (get<string[]>('auth.benefits.items') as string[]) : []
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
@@ -86,7 +86,7 @@ export function SignupForm({
           <Input
             id="signup-password"
             type={showPassword ? 'text' : 'password'}
-            placeholder={t('auth.placeholders.password')}
+            placeholder={t('auth.placeholders.enterPassword')}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="pl-10 pr-10 bg-background border-border focus:border-primary enhanced-focus smooth-transition"
@@ -178,4 +178,3 @@ export function SignupForm({
     </form>
   )
 }
-

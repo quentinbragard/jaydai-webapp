@@ -1,7 +1,7 @@
 // src/components/GoogleSignInButton.tsx
 'use client'
 
-import { useGoogleLogin } from '@react-oauth/google'
+import { GoogleLogin } from '@react-oauth/google'
 import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
@@ -17,27 +17,6 @@ interface GoogleSignInButtonProps {
 export function GoogleSignInButton({ className, disabled, children }: GoogleSignInButtonProps) {
   const { signInWithGoogle } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
-
-  const login = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      try {
-        setIsLoading(true)
-        await signInWithGoogle(tokenResponse.access_token)
-      } catch (error: unknown) {
-        console.error('Google sign-in error:', error)
-        const message = error instanceof Error ? error.message : 'Failed to sign in with Google'
-        toast.error(message)
-      } finally {
-        setIsLoading(false)
-      }
-    },
-    onError: (err) => {
-      console.error('Google sign-in failed:', err)
-      toast.error('Failed to sign in with Google. Please try again.')
-      setIsLoading(false)
-    },
-    flow: 'implicit', // Use implicit flow for client-side authentication
-  })
 
   // Check if Google Client ID is available
   const isGoogleEnabled = !!process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
@@ -74,21 +53,42 @@ export function GoogleSignInButton({ className, disabled, children }: GoogleSign
   }
 
   return (
-    <Button
-      type="button"
-      variant="outline"
-      className={className}
-      onClick={() => login()}
-      disabled={disabled || isLoading}
-    >
-      {isLoading ? (
-        <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Signing in...
-        </>
-      ) : (
-        children
+    <div className={className}>
+      <div className="flex items-center justify-center">
+        <GoogleLogin
+          onSuccess={async (response) => {
+            try {
+              if (disabled) return
+              setIsLoading(true)
+              const idToken = (response as unknown as { credential?: string }).credential
+              if (!idToken) {
+                toast.error('No Google credential received')
+                return
+              }
+              await signInWithGoogle(idToken)
+            } catch (error: unknown) {
+              console.error('Google sign-in error:', error)
+              const message = error instanceof Error ? error.message : 'Failed to sign in with Google'
+              toast.error(message)
+            } finally {
+              setIsLoading(false)
+            }
+          }}
+          onError={() => {
+            toast.error('Failed to sign in with Google. Please try again.')
+            setIsLoading(false)
+          }}
+          useOneTap={false}
+          theme="outline"
+          shape="pill"
+          text="continue_with"
+        />
+      </div>
+      {isLoading && (
+        <div className="mt-2 flex items-center justify-center text-sm text-muted-foreground">
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Signing in...
+        </div>
       )}
-    </Button>
+    </div>
   )
 }
